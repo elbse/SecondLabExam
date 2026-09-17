@@ -8,7 +8,7 @@ CONTENTS
                                  Round Robin, SRTF)
 2. bankers_algorithm.py       - Banker's Algorithm deadlock-avoidance
                                  simulator
-4. sample_cpu_scheduling.txt  - Corresponding console output
+4. sample_cpu_scheduling.txt  - Sample output for CPU scheduling
 5. sample_output_bankers.txt  - Sample output for Banker's Algorithm
 6. README.txt                 - This file
 
