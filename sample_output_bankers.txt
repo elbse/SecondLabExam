@@ -47,3 +47,54 @@ P4: [4, 3, 1]
 
 System is in a Safe State.
 Safe Sequence: P1 -> P3 -> P4 -> P0 -> P2
+
+
+==============================================
+           BANKER'S ALGORITHM SIMULATOR
+==============================================
+Enter number of processes: 5
+Enter number of resource types: 3
+
+Enter the Allocation matrix (5 rows x 3 columns):
+  P0: 0 1 0
+  P1: 2 0 0 
+  P2: 3 0 2
+  P3: 2 1 1 
+  P4: 0 0 2
+
+Enter the Maximum matrix (5 rows x 3 columns):
+  P0: 7 5 3
+  P1: 3 2 2
+  P2: 9 0 2
+  P3: 2 2 2 
+  P4: 4 3 3 
+
+Enter the Available vector (3 values):
+  > 1 1 1 
+
+
+Allocation Matrix:
+P0: [0, 1, 0]
+P1: [2, 0, 0]
+P2: [3, 0, 2]
+P3: [2, 1, 1]
+P4: [0, 0, 2]
+
+Maximum Matrix:
+P0: [7, 5, 3]
+P1: [3, 2, 2]
+P2: [9, 0, 2]
+P3: [2, 2, 2]
+P4: [4, 3, 3]
+
+Available Resources: [1, 1, 1]
+
+Need Matrix:
+P0: [7, 4, 3]
+P1: [1, 2, 2]
+P2: [6, 0, 0]
+P3: [0, 1, 1]
+P4: [4, 3, 1]
+
+System is in an Unsafe State (deadlock may occur).
+Processes that could not be scheduled: P0, P2, P4
