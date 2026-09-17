@@ -96,6 +96,4 @@ IMPLEMENTATION NOTES
   Sequence; this repeats until either all processes are sequenced
   (Safe State) or no further process can be satisfied (Unsafe State).
 
-AUTHOR
-------
-Prepared for CS19L Second Laboratory Exam.
+
