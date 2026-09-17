@@ -1,0 +1,99 @@
+==============================================
+        CPU SCHEDULING ALGORITHM SIMULATOR
+==============================================
+Enter number of processes: 5
+
+--- Process P0 ---
+  Arrival time of P0: 0
+  Burst time of P0: 4
+
+--- Process P1 ---
+  Arrival time of P1: 1
+  Burst time of P1: 5
+
+--- Process P2 ---
+  Arrival time of P2: 2
+  Burst time of P2: 2
+
+--- Process P3 ---
+  Arrival time of P3: 3
+  Burst time of P3: 1
+
+--- Process P4 ---
+  Arrival time of P4: 4
+  Burst time of P4: 6
+
+Choose a scheduling algorithm:
+  1. FCFS (Non-Preemptive)
+  2. SJF  (Non-Preemptive)
+  3. Round Robin (Preemptive)
+  4. SRTF (Preemptive SJF)
+  5. Run ALL of the above
+  0. Exit
+Enter choice: 5
+
+================ FCFS (Non-Preemptive) ================
+
+Gantt Chart:
+| P0 | P1 | P2 | P3 | P4 |
+0   4   9  11  12  18
+
+PID   Arrival   Burst   Completion  Turnaround    Waiting   
+P0    0         4       4           4             0         
+P1    1         5       9           8             3         
+P2    2         2       11          9             7         
+P3    3         1       12          9             8         
+P4    4         6       18          14            8         
+
+Average Waiting Time    : 5.20
+Average Turnaround Time : 8.80
+
+============ SJF (Non-Preemptive) ============
+
+Gantt Chart:
+| P0 | P3 | P2 | P1 | P4 |
+0   4   5   7  12  18
+
+PID   Arrival   Burst   Completion  Turnaround    Waiting   
+P0    0         4       4           4             0         
+P1    1         5       12          11            6         
+P2    2         2       7           5             3         
+P3    3         1       5           2             1         
+P4    4         6       18          14            8         
+
+Average Waiting Time    : 3.60
+Average Turnaround Time : 7.20
+
+Enter time quantum for Round Robin: 3
+
+============ Round Robin (Quantum = 3) ============
+
+Gantt Chart:
+| P0 | P1 | P2 | P3 | P0 | P4 | P1 | P4 |
+0   3   6   8   9  10  13  15  18
+
+PID   Arrival   Burst   Completion  Turnaround    Waiting   
+P0    0         4       10          10            6         
+P1    1         5       15          14            9         
+P2    2         2       8           6             4         
+P3    3         1       9           6             5         
+P4    4         6       18          14            8         
+
+Average Waiting Time    : 6.40
+Average Turnaround Time : 10.00
+
+============ SRTF (Preemptive SJF) ============
+
+Gantt Chart:
+| P0 | P3 | P2 | P1 | P4 |
+0   4   5   7  12  18
+
+PID   Arrival   Burst   Completion  Turnaround    Waiting   
+P0    0         4       4           4             0         
+P1    1         5       12          11            6         
+P2    2         2       7           5             3         
+P3    3         1       5           2             1         
+P4    4         6       18          14            8         
+
+Average Waiting Time    : 3.60
+Average Turnaround Time : 7.20
