@@ -27,6 +27,8 @@ def read_matrix(name, n_processes, n_resources):
         row = input(f"  P{i}: ").split()
         row = [int(x) for x in row]
         if len(row) != n_resources:
+            # Basic validation so a mistyped row fails loudly instead
+            # of silently corrupting later calculations.
             raise ValueError(
                 f"Expected {n_resources} values for P{i}, got {len(row)}"
             )
@@ -58,6 +60,22 @@ def print_matrix(title, matrix):
 
 
 def bankers_algorithm(n_processes, n_resources, allocation, maximum, available):
+    """Runs the Banker's Algorithm SAFETY ALGORITHM:
+    
+          1. Work  = a working copy of Available (resources currently free).
+          2. Finish[i] = False for every process (none have been proven
+             safe to finish yet).
+          3. Repeatedly look for some process i that is not yet finished
+             whose Need can be fully covered by Work (Need[i] <= Work).
+             - If found: pretend it runs to completion and gives back all
+               of its Allocation, so Work += Allocation[i], mark
+               Finish[i] = True, and append it to the Safe Sequence.
+             - Keep scanning from the top until a full pass finds no more
+               processes that qualify.
+          4. If every process ends up Finished, the system is in a SAFE
+             state and the order they finished in is a valid Safe
+             Sequence. Otherwise, it's UNSAFE (deadlock may occur).
+        """
     need = compute_need(allocation, maximum, n_processes, n_resources)
     print_matrix("Need Matrix", need)
 
@@ -65,17 +83,25 @@ def bankers_algorithm(n_processes, n_resources, allocation, maximum, available):
     finish = [False] * n_processes
     safe_sequence = []
 
+    # Keep looping and scanning for eligible processes until either
+    # everyone is finished, or a full pass finds nobody new to add.
     while len(safe_sequence) < n_processes:
         found = False
         for i in range(n_processes):
             if not finish[i] and all(need[i][j] <= work[j] for j in range(n_resources)):
-                # process i can finish; reclaim its allocated resources
+                # Process i can get everything it might still need
+                # from the currently available pool, so it can run to
+                # completion. Simulate that by releasing everything it
+                # currently holds back into the pool.
                 for j in range(n_resources):
                     work[j] += allocation[i][j]
                 finish[i] = True
                 safe_sequence.append(f"P{i}")
                 found = True
         if not found:
+            # A full pass over every process found no one whose Need
+            # fits in Work -- the remaining processes are stuck, so no
+            # safe sequence exists.
             break
 
     if all(finish):
@@ -98,14 +124,20 @@ def request_resources(n_processes, n_resources, allocation, maximum, available):
 
     need = compute_need(allocation, maximum, n_processes, n_resources)
 
+    # Rule 1: a process can never request more than it originally
+    # declared as its maximum remaining need.
     if any(request[j] > need[pid][j] for j in range(n_resources)):
         print("Error: Process has exceeded its maximum claim.")
         return
+    
+    # Rule 2: the request can't exceed what's currently free.
     if any(request[j] > available[j] for j in range(n_resources)):
         print("Request cannot be granted: not enough resources currently available.")
         return
 
-    # tentatively grant the request
+    # Tentatively grant the request: move the requested resources
+    # from Available into this process's Allocation, then re-run the
+    # safety algorithm to see if the resulting state is still safe.
     new_available = [available[j] - request[j] for j in range(n_resources)]
     new_allocation = [row[:] for row in allocation]
     new_allocation[pid] = [new_allocation[pid][j] + request[j] for j in range(n_resources)]
@@ -115,6 +147,8 @@ def request_resources(n_processes, n_resources, allocation, maximum, available):
     if safe:
         print(f"\nRequest can be granted immediately for P{pid}.")
     else:
+        # Not actually applied to the real state -- the request would
+        # have to wait until the system can grant it safely.
         print(f"\nRequest for P{pid} must wait (would leave system unsafe).")
 
 
@@ -134,8 +168,12 @@ def main():
     print_matrix("Maximum Matrix", maximum)
     print(f"\nAvailable Resources: {available}")
 
+    # Run the core safety check -- this prints the Need matrix and
+    # the Safe/Unsafe verdict.
     bankers_algorithm(n_processes, n_resources, allocation, maximum, available)
 
+    # Optional bonus feature: let the user simulate an incoming
+    # resource request and see whether it could be safely granted.
     choice = input("\nWould you like to test a resource request? (y/n): ").strip().lower()
     if choice == "y":
         request_resources(n_processes, n_resources, allocation, maximum, available)
